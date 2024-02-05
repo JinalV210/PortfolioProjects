@@ -1,0 +1,56 @@
+import openpyxl
+from bs4 import BeautifulSoup
+
+# Read the HTML file
+file_path = 'C:/Users/jinal/OneDrive/Desktop/JINAL/portforioprojects/Amazon_web_scrapping_project/Amazon.html'  # Replace with the actual path to your HTML file
+with open(file_path, 'r') as file:
+    html_content = file.read()
+
+# Parse the HTML with BeautifulSoup
+soup = BeautifulSoup(html_content, 'html.parser')
+#print(soup.prettify())
+
+# Find all divs with the specified class
+divs = soup.find_all("div", {"class":"a-section aok-relative s-image-fixed-height"})
+
+# Create or open an Excel file
+excel_file_path = 'C:/Users/jinal/OneDrive/Desktop/JINAL/portforioprojects/Amazon_web_scrapping_project/output3.xlsx'
+workbook = openpyxl.Workbook()
+sheet = workbook.active
+
+# Write headers to the Excel file
+sheet.append(['Product_name', 'Product_Price', 'Product_Reviews'])
+
+# Iterate through each div and extract information
+for div in divs:
+    # Extract Product Name
+    product_name_tag = div.find("span", {"class":"a-size-medium a-color-base a-text-normal"})
+    if product_name_tag:
+        product_name = product_name_tag.text.strip() 
+    else:
+        product_name = ""
+
+    # Extract Product Price
+    product_price_tag = div.find("span", {"class":"a-price-whole"})
+    #product_price = product_price_tag.text.strip() if product_price_tag else ''
+    if product_price_tag:
+        Product_Price = product_price_tag.text.strip() 
+    else:
+        Product_Price = ""
+        
+        
+    # Extract Product Reviews
+    product_reviews_tag = div.find("span", {"class":"a-size-base"})
+   # product_reviews = product_reviews_tag.text.strip() if product_reviews_tag else ''
+    if product_reviews_tag:
+        Product_Reviews = product_reviews_tag.text.strip() 
+    else:
+        Product_Reviews = ""
+        
+        
+    # Write the data to the Excel file
+    sheet.append([product_name, Product_Price, Product_Reviews])
+
+
+# Save the Excel file
+workbook.save(excel_file_path)
